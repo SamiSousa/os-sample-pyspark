@@ -6,6 +6,12 @@ from __future__ import print_function
 import re, sys
 from pyspark import SparkContext, SparkConf
 
+from flask import Flask, request
+import os
+import json
+
+app = Flask(__name__)
+
 def linesToWordsFunc(line):
     wordsList = line.split()
     wordsList = [re.sub(r'\W+', '', word) for word in wordsList]
@@ -19,6 +25,9 @@ def reduceToCount(a, b):
     return (a + b)
 
 def main():
+
+    dicto = {}
+
     conf = SparkConf().setAppName("Words count").setMaster("local")
     sc = SparkContext(conf=conf)
     rdd = sc.textFile("data.txt")
@@ -34,7 +43,23 @@ def main():
         # print to stderr so we can see it in the pod's logs (maybe?)
         print( word, ':', str(count), file=sys.stderr)
 
+        dicto.update({ word : str(count) })
+
     sc.stop()
+    return dicto
+
+@app.route("/")
+def init():
+    return "Python Flask Spark server running. Add the 'main' route to this URL to invoke the app."
+
+@app.route("/main")
+def wordcount():
+
+    final = json.dumps(main())
+    print(final)
+
+    return final
 
 if __name__ == "__main__":
-    main()
+    app.run()
+    #main()
