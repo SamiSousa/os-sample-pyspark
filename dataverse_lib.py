@@ -167,7 +167,7 @@ def run_iterative_query(base_url, start=0, per_page=10, limit=None):
 
 	if start + per_page >= total_count:
 		return result_list
-	elif limit and limit >= total_count:
+	if limit and limit >= start + per_page:
 		return result_list
 
 	else:
