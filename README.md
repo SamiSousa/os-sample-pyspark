@@ -16,7 +16,7 @@ You should have access to an OpenShift cluster and be logged in with the
    oc create -f https://radanalytics.io/resources.yaml
    ```
 
-2. Launch sparkpi
+2. Launch spark app
    ```bash
    oc new-app --template oshinko-python-build-dc  \
        -p APPLICATION_NAME=pyspark \
