@@ -52,9 +52,9 @@ def main():
 def init():
     coordinates = str(os.environ["coordinates"])
     #credentials = os.environ["credentials"]
-    message = "Python Flask Spark server running. Add the 'main' route to this URL to invoke the app." +
+    message = ("Python Flask Spark server running. Add the 'main' route to this URL to invoke the app." +
         "\ncoordinates=" + coordinates +
-        "\ncredentials=<redacted>"
+        "\ncredentials=<redacted>")
     return message
 
 @app.route("/main")
