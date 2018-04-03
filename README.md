@@ -30,9 +30,9 @@ You should have access to an OpenShift cluster and be logged in with the
 
 4. Visit the exposed URL with your browser or other HTTP tool, for example:
    ```bash
-   $ curl http://`oc get routes/sparkpi --template='{{.spec.host}}'`
-   Python Flask SparkPi server running. Add the 'sparkpi' route to this URL to invoke the app.
+   $ curl http://`oc get routes/pyspark --template='{{.spec.host}}'`
+   Python Flask Spark server running. Add the 'main' route to this URL to invoke the app.
 
-   $ curl http://`oc get routes/sparkpi --template='{{.spec.host}}'`/sparkpi
-   Pi is roughly 3.140480
+   $ curl http://`oc get routes/pyspark --template='{{.spec.host}}'`/main
+   (something from wordcount)
    ```
