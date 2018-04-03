@@ -151,7 +151,7 @@ def run_iterative_query(base_url, start=0, per_page=10, limit=None):
 	# returns a list of json objects describing query results
 	# base_url is the url to the target dataverse, including query terms, excluding 'start' and 'per_page'
 	if limit and limit < start + per_page:
-		per_page = per_page - (start - limit)
+		per_page = limit - start
 
 	query_url = base_url + "&start=" + str(start) + "&per_page=" + str(per_page)
 
