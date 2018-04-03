@@ -10,6 +10,8 @@ from flask import Flask, request
 import os
 import json
 
+from dataverse_lib import Dataverse
+
 app = Flask(__name__)
 
 def linesToWordsFunc(line):
@@ -30,7 +32,11 @@ def main():
 
     conf = SparkConf().setAppName("Words count").setMaster("local")
     sc = SparkContext(conf=conf)
-    rdd = sc.textFile("data.txt")
+ 
+    # get file from dataverse
+    filename = get_a_file()
+
+    rdd = sc.textFile(filename)
 
     words = rdd.flatMap(linesToWordsFunc)
     pairs = words.map(wordsToPairsFunc)
@@ -47,6 +53,22 @@ def main():
 
     sc.stop()
     return dicto
+
+def get_a_file():
+
+    coordinates = str(os.environ["coordinates"])
+
+    # get a dataverse
+    dataverse = Dataverse(coordinates, "")
+
+    # get file from dataverse
+    file = dataverse.get_file()
+
+    # download file
+    filename = str(fileid) + ".txt"
+    file.download(filename)
+
+    return filename
 
 @app.route("/")
 def init():

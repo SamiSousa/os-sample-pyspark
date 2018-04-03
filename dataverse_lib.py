@@ -21,8 +21,9 @@ class DataverseJson:
 		return "Dataverse json Object for " + self.name
 
 class Dataverse(DataverseJson):
-	def __init__(self, url, token, json):
-		DataverseJson.__init__(self, json)
+	def __init__(self, url, token, json=None):
+		if json:
+			DataverseJson.__init__(self, json)
 		self.url = url
 		self.token = token
 		# name of server
