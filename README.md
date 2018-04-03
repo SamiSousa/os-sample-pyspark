@@ -19,7 +19,7 @@ You should have access to an OpenShift cluster and be logged in with the
 2. Launch sparkpi
    ```bash
    oc new-app --template oshinko-python-build-dc  \
-       -p APPLICATION_NAME=sparkpi \
+       -p APPLICATION_NAME=pyspark \
        -p GIT_URI=https://github.com/SamiSousa/os-sample-pyspark
    ```
 
