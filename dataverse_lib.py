@@ -1,6 +1,9 @@
 import requests
 import sys
-import urllib.request
+try: # python3
+	from urllib.request import urlopen
+except:
+	from urllib2 import urlopen
 from pprint import pprint
 import json
 import shutil
@@ -175,5 +178,5 @@ def run_iterative_query(base_url, start=0, per_page=10, limit=None):
 
 def download_from_url(url, path):
 	# download from url and write to path
-	with urllib.request.urlopen(url) as response, open(path, 'wb') as out_file:
+	with urlopen(url) as response, open(path, 'wb') as out_file:
 		shutil.copyfileobj(response, out_file)
