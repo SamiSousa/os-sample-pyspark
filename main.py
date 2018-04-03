@@ -50,7 +50,11 @@ def main():
 
 @app.route("/")
 def init():
-    return "Python Flask Spark server running. Add the 'main' route to this URL to invoke the app."
+    coordinates = os.environ["coordinates"]
+    credentials = os.environ["credentials"]
+    return "Python Flask Spark server running. Add the 'main' route to this URL to invoke the app." +
+        "\ncoordinates=" + coordinates +
+        "\ncredentials=<redacted>"
 
 @app.route("/main")
 def wordcount():
