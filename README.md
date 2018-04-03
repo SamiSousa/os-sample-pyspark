@@ -25,7 +25,7 @@ You should have access to an OpenShift cluster and be logged in with the
 
 3. Expose an external route
    ```bash
-   oc expose svc/sparkpi
+   oc expose svc/pyspark
    ```
 
 4. Visit the exposed URL with your browser or other HTTP tool, for example:
