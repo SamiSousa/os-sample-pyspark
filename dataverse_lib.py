@@ -184,6 +184,6 @@ def run_iterative_query(base_url, start=0, per_page=10, limit=None):
 
 def download_from_url(url, path):
 	# download from url and write to path
-	response = urlopen(url).read()
+	response = urlopen(url)
 	with open(path, 'wb') as out_file:
 		shutil.copyfileobj(response, out_file)
