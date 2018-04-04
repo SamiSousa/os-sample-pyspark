@@ -69,8 +69,14 @@ class Dataverse(DataverseJson):
 
 	# get a single file
 	def get_file(self, query="*"):
-		return run_iterative_query(self.server + "/api/search/?q=" + query + "&subtree=" + self.subtree + "&type=file", limit=1)
+		file_descriptions = run_iterative_query(self.server + "/api/search/?q=" + 
+			query + "&subtree=" + self.subtree + "&type=file", limit=1)
 
+		for file in file_descriptions:
+			return File(file["file_id"], self, None, json=file)
+
+		# otherwise, no file
+		return None
 	# toString
 	def ToString(self):
 		return "Dataverse at url: " + self.url

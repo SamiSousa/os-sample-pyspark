@@ -65,7 +65,7 @@ def get_a_file():
     file = dataverse.get_file()
 
     # download file
-    filename = str(file.fileid) + ".txt"
+    filename = str(file.file_id) + ".txt"
     file.download(filename)
 
     return filename
