@@ -18,7 +18,7 @@ You should have access to an OpenShift cluster and be logged in with the
 
 2. Launch spark app
    ```bash
-   oc new-app --template oshinko-python-build-dc  \
+   oc new-app --template oshinko-python-spark-build-dc  \
        -p APPLICATION_NAME=pyspark \
        -p GIT_URI=https://github.com/SamiSousa/os-sample-pyspark
    ```
