@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
-# Reference: https://stackoverflow.com/a/32845282
+# Flask reference: https://github.com/radanalyticsio/tutorial-sparkpi-python-flask
 
 from __future__ import print_function
-import re, sys
-from pyspark import SparkContext, SparkConf
 
 from flask import Flask, request
 import os
@@ -14,48 +12,8 @@ from dataverse_lib import Dataverse
 
 app = Flask(__name__)
 
-def linesToWordsFunc(line):
-    wordsList = line.split()
-    wordsList = [re.sub(r'\W+', '', word) for word in wordsList]
-    filtered = filter(lambda word: re.match(r'\w+', word), wordsList)
-    return filtered
-
-def wordsToPairsFunc(word):
-    return (word, 1)
-
-def reduceToCount(a, b):
-    return (a + b)
-
-def main():
-
-    dicto = {}
-
-    conf = SparkConf().setAppName("Words count").setMaster("local")
-    sc = SparkContext(conf=conf)
- 
-    # get file from dataverse
-    filename = get_a_file()
-
-    rdd = sc.textFile(filename)
-
-    words = rdd.flatMap(linesToWordsFunc)
-    pairs = words.map(wordsToPairsFunc)
-    counts = pairs.reduceByKey(reduceToCount)
-
-    # Get the first top 100 words
-    output = counts.takeOrdered(100, lambda (k, v): -v)
-
-    for(word, count) in output:
-        # print to stderr so we can see it in the pod's logs (maybe?)
-        print( word, ':', str(count), file=sys.stderr)
-
-        dicto.update({ word : str(count) })
-
-    sc.stop()
-    return dicto
-
 def get_a_file():
-
+    # return filename of a downloaded file
     coordinates = str(os.environ["coordinates"])
 
     # get a dataverse
@@ -74,15 +32,15 @@ def get_a_file():
 def init():
     coordinates = str(os.environ["coordinates"])
     #credentials = os.environ["credentials"]
-    message = ("Python Flask Spark server running. Add the 'main' route to this URL to invoke the app." +
+    message = ("Python Flask Spark server running. Add the 'wordcount' route to this URL to invoke the app." +
         "\ncoordinates=" + coordinates +
         "\ncredentials=<redacted>")
     return message
 
-@app.route("/main")
+@app.route("/wordcount")
 def wordcount():
 
-    final = json.dumps(main())
+    final = json.dumps(main(get_a_file()))
     print(final)
 
     return final

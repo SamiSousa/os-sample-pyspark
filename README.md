@@ -31,7 +31,7 @@ You should have access to an OpenShift cluster and be logged in with the
 4. Visit the exposed URL with your browser or other HTTP tool, for example:
    ```bash
    $ curl http://`oc get routes/pyspark --template='{{.spec.host}}'`
-   Python Flask Spark server running. Add the 'main' route to this URL to invoke the app.
+   Python Flask Spark server running. Add the 'wordcount' route to this URL to invoke the app.
 
    $ curl http://`oc get routes/pyspark --template='{{.spec.host}}'`/main
    (something from wordcount)
@@ -45,6 +45,8 @@ The `.s2i` folder contains the environment variables for our main script which i
 
 The `dataverse_lib.py` script contains the functions for interacting with the `Dataverse API`, such as searching and downloading certain files within a dataverse, or a dataverse subtree.
 
-The `main.py` script contains the logic for running the `Spark` word count file on a txt file, and also contains a simple `Flask` implementation which displays the word count on a browser via localhost.
+The `spark_wordcount.py` script contains the logic for running the `Spark` word count file on a txt file.
+
+The `main.py` script contains a simple `Flask` implementation which displays the word count on a browser via localhost.
 
 
