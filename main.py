@@ -9,6 +9,9 @@ import os
 import json
 
 from dataverse_lib import Dataverse
+from spark_wordcount import startSpark
+
+#os.environ["coordinates"] = "https://demo.dataverse.org/dataverse/harvard"
 
 app = Flask(__name__)
 
@@ -23,7 +26,7 @@ def get_a_file():
     file = dataverse.get_file()
 
     # download file
-    filename = str(file.file_id) + ".txt"
+    filename = "data/" + str(file.file_id) + ".txt"
     file.download(filename)
 
     return filename
@@ -40,7 +43,7 @@ def index():
 @app.route("/wordcount")
 def wordcount():
 
-    final = json.dumps(main(get_a_file()))
+    final = json.dumps(startSpark(get_a_file()))
     print(final)
 
     return final

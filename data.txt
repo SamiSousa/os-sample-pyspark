@@ -1,7 +1,0 @@
-Hello World
-This is a example dataset for this pyspark application
-Here is a haiku
-
-A crisp wind blows by
-Rushing past my head and hair
-My perm is ruined
