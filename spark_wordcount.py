@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Spark Reference: https://stackoverflow.com/a/32845282
 
 from __future__ import print_function
