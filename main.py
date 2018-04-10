@@ -29,7 +29,7 @@ def get_a_file():
     return filename
 
 @app.route("/")
-def init():
+def index():
     coordinates = str(os.environ["coordinates"])
     #credentials = os.environ["credentials"]
     message = ("Python Flask Spark server running. Add the 'wordcount' route to this URL to invoke the app." +
