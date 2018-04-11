@@ -13,12 +13,14 @@ import re
 class DataverseJson:
 	def __init__(self, json):
 		self.json = json 
-		self.description = json["description"]
-		self.name = json["name"]
 
 	def pprint(self):
 		# pretty print
-		pprint(self.json, indent=2)
+		if self.json:
+			pprint(self.json, indent=2)
+		else:
+			# no json, just print the object
+			print(self.ToString())
 
 	def ToString(self):
 		return "Dataverse json Object for " + self.name
@@ -34,36 +36,36 @@ class Dataverse(DataverseJson):
 		# name of subtree
 		self.subtree = url.split("/")[-1] 
 
-	def get_dataverses(self, query="*", per_page=10):
+	def get_dataverses(self, query="*", per_page=10, limit=None):
 		# returns list of all dataverses in the subtree
 		dataverses = []
 		dataverse_descriptions = run_iterative_query(self.server + "/api/search/?q=" + query + 
-			"&subtree=" + self.subtree + "&type=dataverse", per_page=per_page)
+			"&subtree=" + self.subtree + "&type=dataverse", per_page=per_page, limit=limit)
 
 		for dataverse in dataverse_descriptions:
 			dataverses.append(Dataverse(dataverse["url"], "", dataverse))
 
 		return dataverses
 
-	def get_datasets(self, query="*", per_page=10):
+	def get_datasets(self, query="*", per_page=10, limit=None):
 		# returns list of all datasets in the subtree
 		datasets = []
 		datasets_descriptions = run_iterative_query(self.server + "/api/search/?q=" + query +
-			"&subtree=" + self.subtree + "&type=dataset", per_page=per_page)
+			"&subtree=" + self.subtree + "&type=dataset", per_page=per_page, limit=limit)
 
 		for dataset in datasets_descriptions:
-			datasets.append(Dataset(dataset["global_id"], self, json=dataset))
+			datasets.append(Dataset(dataset["global_id"], dataverse=self, json=dataset))
 
 		return datasets
 
-	def get_files(self, query="*", per_page=10):
+	def get_files(self, query="*", per_page=10, limit=None):
 		# returns list of all files in the subtree
 		files = []
 		file_descriptions = run_iterative_query(self.server + "/api/search/?q=" + query +
-			"&subtree=" + self.subtree + "&type=file", per_page=per_page)
+			"&subtree=" + self.subtree + "&type=file", per_page=per_page, limit=limit)
 
 		for file in file_descriptions:
-			files.append(File(file["file_id"], self, None, json=file))
+			files.append(File(file["file_id"], self, dataset=None, json=file))
 
 		return files
 
@@ -73,7 +75,7 @@ class Dataverse(DataverseJson):
 			query + "&subtree=" + self.subtree + "&type=file", limit=1)
 
 		for file in file_descriptions:
-			return File(file["file_id"], self, None, json=file)
+			return File(file["file_id"], self, dataset=None, json=file)
 
 		# otherwise, no file
 		return None
@@ -104,7 +106,7 @@ class Dataset(DataverseJson):
 		self.files = []
 
 		for file in dataset["data"]["files"]:
-			self.files.append(File(file["dataFile"]["id"], self.dataverse, self))
+			self.files.append(File(file["dataFile"]["id"], dataverse=self.dataverse, dataset=self, json=file))
 
 		return self.files
 
@@ -132,6 +134,14 @@ class File(DataverseJson):
 		self.dataverse = dataverse
 		self.dataset = dataset
 		self.file_id = file_id
+
+		# json fields
+		'''
+		if self.json:
+			self.name = self.json["name"]
+			self.size_in_bytes = self.json["size_in_bytes"]
+			self.file_type = self.json["file_type"]
+		'''
 
 	def download(self, filename):
 		# download file
@@ -173,7 +183,7 @@ def run_iterative_query(base_url, start=0, per_page=10, limit=None):
 
 	if start + per_page >= total_count:
 		return result_list
-	if limit and limit >= start + per_page:
+	if limit and limit <= start + per_page:
 		return result_list
 
 	else:

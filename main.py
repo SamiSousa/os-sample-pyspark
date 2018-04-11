@@ -9,9 +9,9 @@ import os
 import json
 
 from dataverse_lib import Dataverse
-from spark_wordcount import startSpark
+#from spark_wordcount import startSpark
 
-#os.environ["coordinates"] = "https://demo.dataverse.org/dataverse/harvard"
+os.environ["coordinates"] = "https://demo.dataverse.org/dataverse/harvard"
 
 app = Flask(__name__)
 
@@ -40,6 +40,45 @@ def index():
         "\ncredentials=<redacted>")
     return message
 
+@app.route("/files")
+def service_files():
+    dataverse = Dataverse(os.environ["coordinates"], "")
+    files = dataverse.get_files(limit=10)
+    response = ""
+    for file in files:
+        response += "<div>" + str(file.json) + "</div>"
+    return response
+
+@app.route("/datasets")
+def service_datasets():
+    dataverse = Dataverse(os.environ["coordinates"], "")
+    datasets = dataverse.get_datasets(limit=10)
+    response = ""
+    for dataset in datasets:
+        response += "<div>" + str(dataset.json) + "</div>"
+    return response
+
+'''
+@app.route("/datasets/<global_id>")
+def files_from_dataset(global_id):
+    dataverse = Dataverse(os.environ["coordinates"], "")
+    dataset = Dataset(global_id, dataverse, json=None)
+    response = ""
+    for file in dataset.get_files():
+        response += "<div>" + str(file.json) + "</div>"
+    return response
+'''
+
+@app.route("/dataverses")
+def service_dataverses():
+    dataverse = Dataverse(os.environ["coordinates"], "")
+    dataverses = dataverse.get_dataverses(limit=10)
+    response = ""
+    for subtree in dataverses:
+        response += "<div>" + str(subtree.json) + "</div>"
+    return response
+
+'''
 @app.route("/wordcount")
 def wordcount():
 
@@ -47,6 +86,7 @@ def wordcount():
     print(final)
 
     return final
+'''
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
