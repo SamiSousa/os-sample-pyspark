@@ -13,8 +13,6 @@ import re
 class DataverseJson:
 	def __init__(self, json):
 		self.json = json 
-		self.description = json["description"]
-		self.name = json["name"]
 
 	def pprint(self):
 		# pretty print
