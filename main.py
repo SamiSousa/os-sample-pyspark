@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from __future__ import print_function
-from builtins import dict
+#from builtins import dict
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
     render_template, flash
