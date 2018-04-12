@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
 
-# Flask reference: https://github.com/radanalyticsio/tutorial-sparkpi-python-flask
-
 from __future__ import print_function
 
-from flask import Flask, request
+from flask import Flask, request, session, g, redirect, url_for, abort, \
+    render_template, flash
 import os
 import json
 
-from dataverse_lib import Dataverse
-#from spark_wordcount import startSpark
+from dataverse_lib import Dataverse, File
+from spark_wordcount import startSpark
 
-os.environ["coordinates"] = "https://demo.dataverse.org/dataverse/harvard"
+#os.environ["coordinates"] = "https://demo.dataverse.org/dataverse/harvard"
 
 app = Flask(__name__)
+app.config.from_object(__name__)
+
+app.config.update(dict(
+    SECRET_KEY='development key'
+))
+
 
 def get_a_file():
     # return filename of a downloaded file
@@ -33,52 +38,58 @@ def get_a_file():
 
 @app.route("/")
 def index():
-    coordinates = str(os.environ["coordinates"])
-    #credentials = os.environ["credentials"]
-    message = ("Python Flask Spark server running. Add the 'wordcount' route to this URL to invoke the app." +
-        "\ncoordinates=" + coordinates +
-        "\ncredentials=<redacted>")
-    return message
+    if request.args.get('file'):
+        session['selected_file'] = request.args.get('file', type=int)
+        return redirect(url_for('count'))
 
-@app.route("/files")
-def service_files():
-    dataverse = Dataverse(os.environ["coordinates"], "")
-    files = dataverse.get_files(limit=10)
-    response = ""
-    for file in files:
-        response += "<div>" + str(file.json) + "</div>"
-    return response
+    coordinates = os.environ.get("coordinates")
+    credentials = os.environ.get("credentials", default="")
 
-@app.route("/datasets")
-def service_datasets():
-    dataverse = Dataverse(os.environ["coordinates"], "")
-    datasets = dataverse.get_datasets(limit=10)
-    response = ""
-    for dataset in datasets:
-        response += "<div>" + str(dataset.json) + "</div>"
-    return response
+    if not coordinates:
+        return "Could not find binding to dataverse subtree.<br />Make sure that you have added the secret to this application."
 
-'''
-@app.route("/datasets/<global_id>")
-def files_from_dataset(global_id):
-    dataverse = Dataverse(os.environ["coordinates"], "")
-    dataset = Dataset(global_id, dataverse, json=None)
-    response = ""
-    for file in dataset.get_files():
-        response += "<div>" + str(file.json) + "</div>"
-    return response
-'''
+    dataverse = Dataverse(coordinates,credentials)
 
-@app.route("/dataverses")
-def service_dataverses():
-    dataverse = Dataverse(os.environ["coordinates"], "")
-    dataverses = dataverse.get_dataverses(limit=10)
-    response = ""
-    for subtree in dataverses:
-        response += "<div>" + str(subtree.json) + "</div>"
-    return response
+    dataverse = Dataverse(coordinates,credentials)
 
-'''
+    # check for args in URL
+    page_num = request.args.get('page', default=1, type=int)
+    if page_num < 1:
+        page_num = 1
+
+    # list first 10 files from dataverse
+    ten_files = dataverse.get_page_of_files(page=page_num)
+    #ten_files = [File(x, dataverse, None, json={'name':'File with file_id: '+str(x)}) for x in [11283,11282,11284,11286,11288,11306,11307,11308,11327,11317]]
+    
+    return render_template('index.html', files=ten_files, page=page_num)
+
+@app.route("/count")
+def count():
+    if 'selected_file' not in session:
+        return redirect(url_for('index'))
+
+    file_id = session['selected_file']
+
+    # download file from dataverse
+    coordinates = os.environ.get("coordinates")
+    credentials = os.environ.get("credentials", default="")
+
+    if not coordinates:
+        return "Could not find binding to dataverse subtree.<br />Make sure that you have added the secret to this application."
+
+    dataverse = Dataverse(coordinates,credentials)
+
+    selected_file = File(file_id, dataverse=dataverse, dataset=None, json=None)
+    selected_file.download("data/" + str(file_id) + ".txt")
+
+    # run wordcount
+    wordlist = startSpark(get_a_file())
+    print(json.dumps(wordlist))
+
+    #wordlist = {"hello":11, "world":2}
+
+    return render_template("count.html", file=selected_file, wordlist=wordlist)
+
 @app.route("/wordcount")
 def wordcount():
 
@@ -86,8 +97,10 @@ def wordcount():
     print(final)
 
     return final
-'''
+
 
 if __name__ == "__main__":
+    if not os.path.isdir("data"):
+        os.mkdir("data")
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)

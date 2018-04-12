@@ -27,8 +27,7 @@ class DataverseJson:
 
 class Dataverse(DataverseJson):
 	def __init__(self, url, token, json=None):
-		if json:
-			DataverseJson.__init__(self, json)
+		DataverseJson.__init__(self, json)
 		self.url = url
 		self.token = token
 		# name of server
@@ -63,6 +62,18 @@ class Dataverse(DataverseJson):
 		files = []
 		file_descriptions = run_iterative_query(self.server + "/api/search/?q=" + query +
 			"&subtree=" + self.subtree + "&type=file", per_page=per_page, limit=limit)
+
+		for file in file_descriptions:
+			files.append(File(file["file_id"], self, dataset=None, json=file))
+
+		return files
+
+	def get_page_of_files(self, query="*", page=1, per_page=10):
+		# returns list of files for page
+		files = []
+		file_descriptions = run_iterative_query(self.server + "/api/search/?q=" + query +
+			"&subtree=" + self.subtree + "&type=file", start=((page-1)*per_page), per_page=per_page,
+			limit=((page)*per_page))
 
 		for file in file_descriptions:
 			files.append(File(file["file_id"], self, dataset=None, json=file))
@@ -146,7 +157,7 @@ class File(DataverseJson):
 	def download(self, filename):
 		# download file
 		# run a Data Access API call
-		access_call = self.dataverse.server + "/api/access/datafile/" + self.file_id
+		access_call = self.dataverse.server + "/api/access/datafile/" + str(self.file_id)
 
 		# add the token
 		access_call += "?key=" + self.dataverse.token
