@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 	<div>
-		<h2>Count of words in {{ file.file_id }} listed below:</h2>
+		<h2>Count of words in {{ filename }} listed below:</h2>
 		<ul>
 		{% for word in wordlist %}
 			<li>{{ word }} : {{ wordlist[word] }}</li>
