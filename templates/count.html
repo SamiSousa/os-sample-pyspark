@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+	<div>
+		<h2>Count of words in {{ file.file_id }} listed below:</h2>
+		<ul>
+		{% for word in wordlist %}
+			<li>{{ word }} : {{ wordlist[word] }}</li>
+		{% endfor %}
+		</ul>
+	</div>
+	<div>
+		<a href=./>Back to file select</a>
+	</div>
+{% endblock %}
