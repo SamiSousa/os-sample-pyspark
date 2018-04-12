@@ -23,8 +23,7 @@ class DataverseJson:
 
 class Dataverse(DataverseJson):
 	def __init__(self, url, token, json=None):
-		if json:
-			DataverseJson.__init__(self, json)
+		DataverseJson.__init__(self, json)
 		self.url = url
 		self.token = token
 		# name of server

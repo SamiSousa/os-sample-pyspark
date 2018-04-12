@@ -43,6 +43,8 @@ def index():
 @app.route("/wordcount")
 def wordcount():
 
+    os.mkdir("data")
+
     final = json.dumps(startSpark(get_a_file()))
     print(final)
 
