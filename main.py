@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from __future__ import print_function
+from bultins import dict
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
     render_template, flash
@@ -43,7 +44,7 @@ def index():
         return redirect(url_for('count'))
 
     coordinates = os.environ.get("coordinates")
-    credentials = os.environ.get("credentials", default="")
+    credentials = os.environ.get("credentials")
 
     if not coordinates:
         return "Could not find binding to dataverse subtree.<br />Make sure that you have added the secret to this application."
@@ -84,7 +85,7 @@ def count():
 
     # download file from dataverse
     coordinates = os.environ.get("coordinates")
-    credentials = os.environ.get("credentials", default="")
+    credentials = os.environ.get("credentials")
 
     if not coordinates:
         return "Could not find binding to dataverse subtree.<br />Make sure that you have added the secret to this application."
