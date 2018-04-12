@@ -61,6 +61,18 @@ def index():
     ten_files = dataverse.get_page_of_files(page=page_num)
     #ten_files = [File(x, dataverse, None, json={'name':'File with file_id: '+str(x)}) for x in [11283,11282,11284,11286,11288,11306,11307,11308,11327,11317]]
     
+    # add files to dictionary
+    if 'files' in session:
+        file_dict = session['files']
+    else:
+        file_dict = dict()
+
+    for file in ten_files:
+        file_dict[str(file.file_id)] = file.json['name']
+    
+    #update dictionary
+    session['files'] = file_dict
+
     return render_template('index.html', files=ten_files, page=page_num)
 
 @app.route("/count")
@@ -79,8 +91,10 @@ def count():
 
     dataverse = Dataverse(coordinates,credentials)
 
+    filename = session['files'][str(file_id)]
+
     selected_file = File(file_id, dataverse=dataverse, dataset=None, json=None)
-    selected_file.download("data/" + str(file_id) + ".txt")
+    selected_file.download("data/" + filename)
 
     # run wordcount
     wordlist = startSpark(get_a_file())
@@ -88,7 +102,7 @@ def count():
 
     #wordlist = {"hello":11, "world":2}
 
-    return render_template("count.html", file=selected_file, wordlist=wordlist)
+    return render_template("count.html", filename=filename, wordlist=wordlist)
 
 @app.route("/wordcount")
 def wordcount():
