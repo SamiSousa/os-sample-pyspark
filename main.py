@@ -98,7 +98,7 @@ def count():
     selected_file.download("data/" + filename)
 
     # run wordcount
-    wordlist = startSpark(get_a_file())
+    wordlist = startSpark("data/" + filename)
     print(json.dumps(wordlist))
 
     #wordlist = {"hello":11, "world":2}
