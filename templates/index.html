@@ -9,6 +9,7 @@
 		{% for file in files %}
 			<input type=radio id=file_select_button name=file value={{ file.file_id }}>
 			<label for={{ file.file_id }}>{{ file.json['name'] }}</label>
+			<br />
 		{% endfor %}
 		</div>
 		<div>
