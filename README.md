@@ -20,7 +20,7 @@ You should have access to an OpenShift cluster and be logged in with the
    ```bash
    oc new-app --template oshinko-python-spark-build-dc  \
        -p APPLICATION_NAME=pyspark \
-       -p GIT_URI=https://github.com/dataverse/sample-dataverse-app
+       -p GIT_URI=https://github.com/dataverse-broker/sample-dataverse-app
    ```
 
 4. Add the secret created in step 1 to the pyspark application.
