@@ -32,6 +32,30 @@ You should have access to an OpenShift cluster and be logged in with the
 
 6. Visit the exposed URL with your browser or other HTTP tool, and be prompted by the web UI.
 
+## Common Issues
+
+### The application is timing out on some files
+
+Some users may experience this issue because the flask application waits on the spark cluster to complete it's computation before it displays the wordcount result webpage. This can be caused by:
+
+- The file chosen is very large and as a result the browser timesout before the spark cluster completes the calculation.
+
+- The spark cluster is starved for resources (see ["My spark cluster keeps restarting"](#My-spark-cluster-keeps-restarting))
+
+### My spark cluster keeps restarting
+
+This is can occur when:
+
+- The spark cluster doesn't have enough resources, such as cpu or memory. Try adjusting the limits set on your spark worker (it has a 'w' in it's name) so that it has at least 1 GiB of Memory.
+
+### The application returns an "Internal Server Error"
+
+This can occur when:
+
+- The file selected is not a text-file (perhaps some binary format like .pdf)
+
+- The flask app crashes for any reason, perhaps a bug. [Post an issue](https://github.com/dataverse-broker/sample-dataverse-app/issues/new) so we can help sort it out.
+
 ## Explanation of certain items
 
 The [`requirements.txt`](https://github.com/dataverse-broker/sample-dataverse-app/blob/master/requirements.txt) file contains required packages needed for this python application.
