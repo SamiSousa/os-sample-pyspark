@@ -1,14 +1,15 @@
 {% extends "layout.html" %}
 {% block body %}
 {% if not files %}
-	<p><em>Unbelievable. No files here</em></p>
+	<p><em>No files here</em></p>
 {% else %}
 	<form>
-		<p>Select a file to run through Word Count</p>
+		<h2>Select a file to run through Word Count</h2>
 		<div class=files>
 		{% for file in files %}
 			<input type=radio id=file_select_button name=file value={{ file.file_id }}>
 			<label for={{ file.file_id }}>{{ file.json['name'] }}</label>
+			<br />
 		{% endfor %}
 		</div>
 		<div>
