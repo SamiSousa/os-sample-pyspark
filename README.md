@@ -12,9 +12,13 @@ You should have access to an OpenShift cluster and be logged in with the
 1. Select a Dataverse service from OpenShift's Service Catalog, and create a secret. If dataverse services aren't listed, contact your cluster admin. Or, if deploying to a local cluster, follow the instructions at the [dataverse-broker](https://github.com/dataverse-broker/dataverse-broker) project.
 
 2. Make sure you're inside a project
-   - To display the list of all the projects-
+   - To display a list of all the projects-
       ```bash
       $ oc get projects
+      ```
+   - Select one of the projects-
+      ```bash
+      $ oc project myproject
       ```
 
 3. Create the necessary infrastructure objects
