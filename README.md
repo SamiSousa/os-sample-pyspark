@@ -33,14 +33,25 @@ You should have access to an OpenShift cluster and be logged in with the
        -p GIT_URI=https://github.com/dataverse-broker/sample-dataverse-app
    ```
 
-5. Add the secret created in step 1 to the pyspark application.
+5. Add the secret created in step 1 to the pyspark application
+   - Go to the Overview section of your project
+   - Go to the Dataverse service you chose in the 1st step, click on `View Secret`
+   - Click on `Add to Application` to add the secret to the `pyspark` application
 
 6. Expose an external route
    ```bash
    oc expose svc/pyspark
    ```
 
-7. Visit the exposed URL with your browser or other HTTP tool, and be prompted by the web UI.
+7. Visit the exposed URL with your browser or other HTTP tool, and be prompted by the web UI
+   - Enter the following if the application is not yet available on the browser-
+      ```bash
+      $ oc get pods
+      ```
+   - Select one of the running pods (for example: pyspark-2-vf59x) from the output to view its logs and see if the application is still waiting for the cluster to be available-
+      ```bash
+      $ oc logs -f pyspark-2-vf59x
+      ```
 
 ## Common Issues
 
