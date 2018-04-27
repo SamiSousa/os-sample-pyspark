@@ -34,7 +34,7 @@ You should have access to an OpenShift cluster and be logged in with the
 
 ## Common Issues
 
-### The application is timing out on some files
+#### :warning:The application is timing out on some files
 
 Some users may experience this issue because the flask application waits on the spark cluster to complete it's computation before it displays the wordcount result webpage. This can be caused by:
 
@@ -42,13 +42,13 @@ Some users may experience this issue because the flask application waits on the 
 
 - The spark cluster is starved for resources (see ["My spark cluster keeps restarting"](#My-spark-cluster-keeps-restarting))
 
-### My spark cluster keeps restarting
+#### :warning:My spark cluster keeps restarting
 
 This is can occur when:
 
 - The spark cluster doesn't have enough resources, such as cpu or memory. Try adjusting the limits set on your spark worker (it has a 'w' in it's name) so that it has at least 1 GiB of Memory.
 
-### The application returns an "Internal Server Error"
+#### :warning:The application returns an "Internal Server Error"
 
 This can occur when:
 
