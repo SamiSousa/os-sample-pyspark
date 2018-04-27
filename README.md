@@ -11,26 +11,32 @@ You should have access to an OpenShift cluster and be logged in with the
 
 1. Select a Dataverse service from OpenShift's Service Catalog, and create a secret. If dataverse services aren't listed, contact your cluster admin. Or, if deploying to a local cluster, follow the instructions at the [dataverse-broker](https://github.com/dataverse-broker/dataverse-broker) project.
 
-2. Create the necessary infrastructure objects
+2. Make sure you're inside a project
+   - To display the list of all the projects-
+      ```bash
+      $ oc get projects
+      ```
+
+3. Create the necessary infrastructure objects
    ```bash
    oc create -f https://radanalytics.io/resources.yaml
    ```
 
-3. Launch spark app
+4. Launch spark app
    ```bash
    oc new-app --template oshinko-python-spark-build-dc  \
        -p APPLICATION_NAME=pyspark \
        -p GIT_URI=https://github.com/dataverse-broker/sample-dataverse-app
    ```
 
-4. Add the secret created in step 1 to the pyspark application.
+5. Add the secret created in step 1 to the pyspark application.
 
-5. Expose an external route
+6. Expose an external route
    ```bash
    oc expose svc/pyspark
    ```
 
-6. Visit the exposed URL with your browser or other HTTP tool, and be prompted by the web UI.
+7. Visit the exposed URL with your browser or other HTTP tool, and be prompted by the web UI.
 
 ## Common Issues
 
